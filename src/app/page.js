@@ -1,8 +1,49 @@
+"use client";
 import Image from "next/image";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Home() {
+  const { data: session } = useSession();
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+      {/* Contenedor superior derecho para login/logout y avatar */}
+      <div className="absolute top-6 right-8 z-50 flex flex-col items-end gap-2">
+        {!session ? (
+          <button
+            onClick={() => signIn("google")}
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full max-w-[260px]"
+            style={{ minWidth: 0 }}
+          >
+            <Image
+              className="dark:invert mr-2"
+              src="/vercel.svg"
+              alt="Google logomark"
+              width={20}
+              height={20}
+            />
+            Iniciar sesión con Google
+          </button>
+        ) : (
+          <div className="flex flex-row items-center gap-2 w-full max-w-[260px]">
+            <button
+              onClick={() => signOut()}
+              className="rounded-full border border-solid border-gray-300 dark:border-gray-600 transition-colors flex items-center justify-center bg-gray-200 text-gray-800 gap-2 hover:bg-gray-300 dark:hover:bg-gray-700 font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full"
+              style={{ minWidth: 0 }}
+            >
+              Cerrar sesión
+            </button>
+            {session.user.image && (
+              <Image
+                src={session.user.image}
+                alt={session.user.name || "Avatar"}
+                width={48}
+                height={48}
+                className="rounded-full object-cover border border-gray-300"
+              />
+            )}
+          </div>
+        )}
+      </div>
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Image
           className="dark:invert"
